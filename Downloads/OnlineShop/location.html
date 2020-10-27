@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<title>ABC online shop</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9wb1HoMuZ9f6Vpk1rJ6MFEsUOovpVxKE&callback=initMap">
+</script>
+<style>
+    
+    * {
+      box-sizing: border-box;
+      font-family: Karma, Helvetica, sans-serif;
+    }
+    /* Style the top navigation bar */
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    /* Style the topnav links */
+    .topnav a {
+      float: left;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    /* Change color on hover */
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+
+/* Change color on hover */
+.topnav a2:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+.w3-bar-block .w3-bar-item {padding:20px}
+
+#map{
+height : 400px;
+width:100%;
+}
+
+
+
+</style>
+<body>
+
+
+
+
+<!-- Top menu -->
+<div class="topnav">
+<h4>
+  <a href="http://localhost:8080/">☰</a>
+
+ 
+</h4>
+  </div>
+
+</div>
+<h id="location">
+
+<!-- About Section -->
+<div class="w3-container w3-padding-32 w3-center">
+<!--Show Cart List JSON-->
+<div id="map"></div>
+
+</div>
+
+
+
+
+
+
+<!-- Footer -->
+<footer class="w3-row-padding w3-padding-32">
+<div class="w3-third">
+<h3>FOOTER</h3>
+<p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</div>
+
+
+
+</footer>
+
+<!-- End page content -->
+</div>
+
+<script>
+
+
+function initMap(){
+    var options ={
+zoom : 50,
+center:{lat:22.276543,lng:114.1753413}
+    }
+    var map = new
+    google.maps.Map(document.getElementById('map'),options);
+    
+}
+
+
+</script>
+
+</body>
+</html>
+

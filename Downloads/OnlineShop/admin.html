@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+$("#btn").hide();
+$("#del").hide();
+$("#clear").hide();
+var login= prompt("login:","");
+var password= prompt("password:","");
+var loginInfo = {"login":login,"password":password};
+
+if (login=="" || login==null || password=="" || password ==null){
+$("#show").append("no permission");
+window.history.back();
+}else if(loginInfo.login.length>0 && loginInfo.password.length>0){
+var obj=JSON.stringify(loginInfo);
+$("#show").empty();
+$.post("/adminLogin",
+obj,
+function(data, status){
+if(data=="ok"){
+$("#btn").show();
+$("#del").show();
+$("#clear").show();
+var url="https://picsum.photos/id/";
+$("#btn").click(function(){
+var start = Math.floor((Math.random() * 400) + 1);
+
+
+
+var importJSON = url + start + "/info";
+
+$.get( importJSON, function(data, status){
+var formData = JSON.stringify(data);
+var obj = JSON.parse(formData);
+
+
+var list = { author:obj.author,piclink:url+obj.id+"/450/675"};
+var listData = JSON.stringify(list);
+var jsonData = JSON.parse(listData);
+$("#show").prepend("<p>"+listData+"</p>");
+
+$.post("/handle",listData,function(){
+});
+
+});
+
+});
+$("#del").click(function(){
+//clear the import information
+$("#show").empty();
+//loading the data information
+$.getJSON("/test",function(result){
+$.each(result, function(i,field){
+$("#show").append("<p id="+"\""+"show"+i+"\">"+" "+field._id+" "+(i+1)+"."+"<a href=\""+field.piclink.replace("450/675","800/600")+"\"><img src=\""+field.piclink.replace("450/675","50/50")+"\"></a><button class='w3-button w3-xlarge w3-circle w3-red w3-card-4' type='button'     onclick='delData(\""+field._id+"\",\""+i+"\");'>-</button></p>");
+
+});
+});
+});
+}else{
+alert("no permission");
+window.history.back();
+}
+});
+
+}
+
+
+$("#clear").click(function(){
+   $("#show").empty();
+});
+
+
+
+
+
+});
+
+
+
+</script>
+
+<body>
+
+<form class="w3-container w3-card-4">
+<h2 class="w3-text-blue">Product List Control Form</h2>
+<p id="show"></p>
+
+
+<button class="w3-btn w3-blue" id="btn" type="button">input</button>
+<button class="w3-btn w3-blue" id="del" type="button">delete</button>
+<button class="w3-btn w3-blue" id="clear" type="button">clear</button>
+</form>
+<script>
+
+function delData(id,showID){
+var delId = {"id":id};
+var obj=JSON.stringify(delId);
+$("#show"+showID).empty();
+$.post("/adminForDel",obj,function(){
+});
+}
+
+</script>
+</body>
+
+</html>

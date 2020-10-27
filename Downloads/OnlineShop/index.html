@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html>
+<title>ABC online shop</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    
+    $.getJSON("/ratingHandle",function(data,status){
+        var sum = 0
+        for (var i=0;i<data.length;i++ ){
+            sum+=parseInt(data[i].rating)
+        }
+        var tatolRating = parseInt(sum/data.length)
+        switch(tatolRating){
+            case 5:
+            for (var i=0;i<5;i++){
+            $("#rating").append("<span class='fa fa-star checked'></span>");
+            }
+            break
+           case 4:
+            for (var i=0;i<4;i++){
+            $("#rating").append("<span class='fa fa-star checked'></span>");
+            }
+            $("#rating").append("<span class='fa fa-star'></span>");
+            break
+            case 3:
+            for (var i=0;i<3;i++){
+            $("#rating").append("<span class='fa fa-star checked'></span>");
+            }
+            for (var i=0;i<2;i++){
+            $("#rating").append("<span class='fa fa-star'></span>");
+            }
+            break
+            case 2:
+           for (var i=0;i<2;i++){
+           $("#rating").append("<span class='fa fa-star checked'></span>");
+           }
+           for (var i=0;i<3;i++){
+           $("#rating").append("<span class='fa fa-star'></span>");
+           }
+           break
+           case 1:
+                   
+                    $("#rating").append("<span class='fa fa-star checked'></span>");
+                    
+                    for (var i=0;i<4;i++){
+                    $("#rating").append("<span class='fa fa-star'></span>");
+                    }
+                    break
+        }
+       
+              
+              
+            
+    })
+    
+    
+var listlock = true;
+
+
+$("#show6").fadeIn();
+$("#showCartList").click(function(){
+$("#show6").css("float","")
+$("#hide").empty();
+$("#cartList").hide();
+$("#show7").empty();
+$("#perview").hide();
+$("#show6").fadeIn();
+if(listlock == true){
+var sessionData = sessionStorage.getItem("userInfo");
+var dataList = JSON.parse(sessionData);
+var emailFindCartList = {email:dataList.email};
+var obj = JSON.stringify(emailFindCartList);
+cartListShow(obj);
+listlock = false
+}
+});
+
+
+
+/////session login/////
+var sessionData = sessionStorage.getItem("userInfo");
+if(sessionData!=null){
+login(sessionData);
+}
+
+
+$("#pdtsbtn").hide()
+$("#showCartList").hide()
+$("#logout").hide();
+$("#changePSWBtn").hide();
+$("#login").click(function (){
+
+var email = $("#emailLogin").val();
+var pass = $("#pass").val();
+formData = JSON.stringify({email:email,pass:pass});
+login(formData);
+sessionStorage.setItem("userInfo",formData);
+
+});
+
+/////session login finish/////
+
+////logout/////
+$("#logout").click(function(){
+logout();
+});
+////logout finish////
+
+/////reg form//////
+$("#reg").click(function(){
+//login form value
+var fname =  $("#firstName").val();
+var lname =  $("#lastName").val();
+var email =  $("#email").val();
+var pass1 =  $("#pass1").val();
+var pass2 =  $("#pass2").val();
+//vaildation for 5 result
+var checkResult = 0
+//vaildation for email
+var re = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+//vaildation for name
+var reLetter = /^(?=.{1,50}$)[a-z]+(?:['_.\s][a-z]+)*$/i;
+//vaildation for password
+var rePassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!"#$%&'()*+,-.\/:;<=>?\\@[\]^_`{|}~]).{8,64}$/;
+
+//test all input isn't null
+if (fname=="" && lname=="" && email=="" && pass1=="" && pass2==""){
+$("#show").empty();
+$("#show").append("<b>Please fill in the blank</b>.");
+}
+//the result isn't equal 5
+else if( checkResult !=5){
+$("#show").empty();
+switch(true){
+//vaildation for first name
+case (fname==""):
+$("#show1").empty();
+$("#show1").append("<b>Please fill in the blank</b>.");
+break;
+case (fname.replace(" ","").length<2):
+$("#show1").empty();
+$("#show1").append("<b>It should more than 1 word</b>. ");
+break;
+case (fname.replace(" ","").length>20):
+$("#show1").empty();
+$("#show1").prepend("<b>It should less than 20 words.</b>. ");
+break;
+case (reLetter.test(fname)==false):
+$("#show1").empty();
+$("#show1").prepend("<b>Please check you name</b>.");
+break;
+case (reLetter.test(fname)==true):
+$("#show1").empty();
+checkResult= checkResult+1
+break;
+
+}
+//vaildation for last name
+switch(true){
+case (lname==""):
+$("#show2").empty();
+$("#show2").append("<b>Please fill in the blank</b> ");
+break;
+case (lname.replace(" ","").length<2):
+$("#show2").empty();
+$("#show2").append("<b>It should more than 1 word</b>. ");
+break;
+case (lname.replace(" ","").length>20):
+$("#show2").empty();
+$("#show2").prepend("<b>It should less than 20 words</b>. ");
+break;
+case (reLetter.test(lname)==false):
+$("#show2").empty();
+$("#show2").prepend("<b>Please check you name</b>.");
+break;
+case (reLetter.test(lname)==true):
+$("#show2").empty();
+checkResult= checkResult+1
+break;
+
+}
+
+//vaildation for email
+switch(true){
+case (email==""):
+$("#show3").empty();
+$("#show3").append("<b>Please fill in the blank</b>. ");
+break;
+case (email.replace(" ","").length<2):
+$("#show3").empty();
+$("#show3").append("<b>It should more than 1 word</b>. ");
+break;
+case (email.replace(" ","").length>30):
+$("#show3").empty();
+$("#show3").prepend("<b>It should less than 30 words</b>. ");
+break;
+case (re.test(email)==false):
+$("#show3").empty();
+$("#show3").prepend("<b>Please enter the vaild email address</b>.");
+break;
+case (re.test(email)==true):
+$("#show3").empty();
+checkResult= checkResult+1
+break;
+}
+
+//vaildation for passowrd
+switch(true){
+case (pass1==""):
+$("#show4").empty();
+$("#show4").append("<b>Please fill in the blank</b>. ");
+break;
+case (pass1.replace(" ","").length<7):
+$("#show4").empty();
+$("#show4").append("<b>It should more than 7 words</b>. ");
+break;
+case (pass1.replace(" ","").length>20):
+$("#show4").empty();
+$("#show4").prepend("<b>It should less than 20 words</b>. ");
+break;
+case (pass1 != pass2) :
+$("#show4").empty();
+$("#show4").append("<b>Password must same</b>.");
+break;
+case (rePassword.test(pass1)==false) :
+$("#show4").empty();
+$("#show4").append("<b>Password should be consumed by  AT LEAST one capital letter, one number and one specific character</b>.");
+break;
+case (rePassword.test(pass1)==true) :
+$("#show4").empty();
+checkResult= checkResult+1
+break;
+}
+//vaildation for repeat passowrd
+switch(true){
+case (pass2==""):
+$("#show5").empty();
+$("#show5").append("<b>Please fill in the blank</b>. ");
+break;
+case (pass2.replace(" ","").length<7):
+$("#show5").empty();
+$("#show5").append("<b>It should more than 7 words</b>. ");
+break;
+case (pass2.replace(" ","").length>20):
+$("#show5").empty();
+$("#show5").prepend("<b>It should less than 20 words</b>. ");
+break;
+case (rePassword.test(pass2)==true) :
+$("#show4").empty();
+checkResult= checkResult+1
+$("#show5").empty();
+break;
+}
+
+//5 fields are corrected
+if (checkResult==5){
+//turn the form value to the JSON object
+var obj = { fname:fname ,lname:lname,email:email,password:pass1 };
+var formData = JSON.stringify(obj);
+//send it to the server
+$.post("/reg",
+formData,
+function(data, status){
+$("#show").empty();
+$("#show").prepend(data);
+if(data!="This email has been used, please check it again"){
+    setTimeout(idReload,3000)
+}
+
+});
+$("#show").prepend(formData);
+
+}
+}
+});
+////////////reg form finish/////////
+
+
+
+/////////////cart list////////////
+var itemId = [];
+$("#cart").click(function(){
+$("#cartList").fadeIn();
+var sessionResult = sessionStorage.getItem("userInfo");
+var user = sessionStorage.getItem("user");
+$("#cartList").empty();
+$("#perview").hide()
+$("#show7").empty()
+$("#show6").hide()
+if (user=="false" || user=="" || user==null){
+$("#cartList").prepend("<div class='w3-container w3-center'><h4><p>Please login first</p></h4></div>");
+}
+
+else if(sessionResult.length>2) {
+var formData = JSON.stringify(itemId);
+var obj = JSON.parse(formData);
+
+if(itemId.length!=0){
+
+$.each (itemId, function(x,value){
+
+$("#cartList").append(
+"<div class='w3-display-container w3-text-white w3-quarter' id='f"+x+"'>"+
+"<img src="+itemId[x].pclink.replace("450/675","450/300")+" style='width:99%' class='w3-hover-opacity'>"+
+"<div class='w3-display-bottomleft w3-container'><h3>"+itemId[x].Author+"</h3></div>"+
+"<p></p></div></div>"
+);
+
+});
+}  $("#cartList").prepend(" <div class='w3-container w3-center'><h4><p>You added "+itemId.length+" item(s).</p></h4>");
+if(itemId.length!=0){
+$("#cartList").append(" <div class='w3-container w3-center'><h4><p><button type='button' id='saveCartList'>Add</button><button type='button' id='doNothing'>Cancel</button></p></h4></div>");
+}
+$("[id^=f]").each(function(){
+$(this).mouseover(function(){
+var number = this.id.split('f').pop();
+$("#perview").fadeIn()
+$("#perview").attr('src',itemId[number].pclink.replace("450/675","1600/1060"))
+});
+});
+
+$("#saveCartList").click(function(){
+var sessionData = sessionStorage.getItem("userInfo");
+var dataList = JSON.parse(sessionData);
+cartListHandle(itemId,dataList.email);
+itemId.length=0;
+$("#cartList").fadeOut();
+listlock = true
+setTimeout(loadingCartList,1000);
+});
+
+$("#doNothing").click(function(){
+$("#cartList").fadeOut()
+$("#pdtsbtn").trigger('click');
+});
+
+
+}
+
+
+
+
+});
+
+
+
+
+
+
+
+
+//request to server for getting product list
+$("#pdtsbtn").click(function(){
+pdtlock = true
+$("#cartList").empty();
+$("#show6").hide();
+$("#show7").empty();
+$("#perview").fadeOut();
+$.getJSON("/test", function(data, status){
+var obj = JSON.stringify(data);
+var jdata = JSON.parse(obj);
+var value = 0;
+
+$.each (jdata, function(x,value){
+$("#show7").append(
+"<div class='w3-display-container w3-text-white w3-quarter' id='f"+x+"'>"+
+"<img src="+jdata[x].piclink.replace("450/675","450/300")+" style='width:99%' class='w3-hover-opacity'>"+
+"<div class='w3-display-bottomleft w3-container'><h3>"+jdata[x].author+"</h3></div>"+
+"<p></p></div>"
+);
+
+});
+
+
+$("[id^=f]").each(function(){
+$(this).click(function(){
+var number = this.id.split('f').pop();
+itemId.push({"id":jdata[number]._id,"pclink":jdata[number].piclink,"Author":jdata[number].author});
+alert("You added "+itemId.length+" item(s).");
+});
+});
+
+$("[id^=f]").each(function(){
+$(this).mouseover(function(){
+var number = this.id.split('f').pop();
+$("#perview").fadeIn()
+$("#perview").attr('src',jdata[number].piclink.replace("450/675","1600/1060"))
+});
+});
+});
+
+
+
+//search for only one time
+
+});
+
+////////////cart list finish ///////////
+
+//////turn to cart list to order form//////
+
+});
+
+
+</script>
+
+
+<style>
+
+* {
+box-sizing: border-box;
+font-family: Karma, Helvetica, sans-serif;
+}
+/* Style the top navigation bar */
+.topnav {
+overflow: hidden;
+background-color: #333;
+}
+
+/* Style the topnav links */
+.topnav a {
+float: right;
+display: block;
+color: #f2f2f2;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+background-color: #ddd;
+color: black;
+}
+.topnav a2 {
+float: left;
+display: block;
+color: #f2f2f2;
+text-align: center;
+padding: 14px 18px;
+text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a2:hover {
+background-color: #ddd;
+color: black;
+}
+
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+.w3-bar-block .w3-bar-item {padding:20px}
+
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+width: 100%;
+padding: 12px 20px;
+margin: 8px 0;
+display: inline-block;
+border: 1px solid #ccc;
+box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+background-color: black;
+color: white;
+padding: 12px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+width: 100%;
+}
+
+button:hover {
+opacity: 0.8;
+}
+
+
+
+
+/* Center the image and position the close button */
+.imgcontainer {
+text-align: center;
+margin: 24px 0 12px 0;
+position: relative;
+}
+
+
+span.psw {
+float: right;
+padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 1; /* Sit on top */
+left: 0;
+top: 0;
+width: 100%; /* Full width */
+height: 100%; /* Full height */
+overflow: auto; /* Enable scroll if needed */
+background-color: rgb(0,0,0); /* Fallback color */
+background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+border: 1px solid #888;
+width: 1600px; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+position: absolute;
+right: 25px;
+top: 0;
+color: #000;
+font-size: 35px;
+font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+color: red;
+cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+-webkit-animation: animatezoom 0.6s;
+animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+from {-webkit-transform: scale(0)}
+to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+from {transform: scale(0)}
+to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+span.psw {
+display: block;
+float: none;
+}
+.cancelbtn {
+width: 100%;
+}
+}
+.checked {
+  color: orange;
+}
+
+
+</style>
+<body>
+<div id="id05" class="modal w3-container" style="width:80%">
+
+<div class="imgcontainer">
+<span onclick="document.getElementById('id05').style.display='none'" class="close" title="Close Modal" >&times;</span>
+</div>
+
+<table>
+ <div class="w3-panel w3-card" style="background-color:white"><p><p id="show8"></p></div>
+</table>
+
+
+</div>
+
+
+
+
+<div id="id04" class="modal">
+
+
+<form class="modal-content animate w3-display-container w3-white" style="height:1000px;">
+<div class="imgcontainer">
+<span onclick="document.getElementById('id04').style.display='none'" class="close" title="Close Modal">&times;</span>
+</div>
+<div class="w3-black w3-display-topmiddle w3-padding">
+<h2>Registration Form</h2>
+</div>
+<div class="modal-content animate w3-display-container" style="height:800px;">
+<div class="w3-display-left w3-display-middle w3-display-right w3-padding">
+<h4><p id="show"></p>
+<label><b>First Name</b></label>
+<input  id="firstName" style="width:100%"  class="w3-input w3-border">
+<p   id="show1"></p>
+
+<label><b>Last Name</b></label>
+<input  id="lastName" style="width:100%"  class="w3-input w3-border">
+<p   id="show2"></p>
+
+<label><b>Email</b></label>
+<input  type="email" id="email" style="width:100%"  class="w3-input w3-border">
+<p   id="show3"></p>
+
+<label><b>Password</b></label>
+<input  type="password" id="pass1" style="width:100%"  class="w3-input w3-border">
+<p id="show4"></p>
+
+<label><b>Repeat Password</b></label>
+<input  type="password" id="pass2" style="width:100%"  class="w3-input w3-border">
+<p id="show5"></p>
+
+</h4>
+</div>
+<div class="w3-display-bottommiddle w3-padding w3-hide-small">
+<p><button id="reg" type="button" >Register</button></p>
+
+</div>
+</form>
+
+</div>
+</div>
+
+
+<div id="id03" class="modal">
+
+<form class="modal-content animate w3-display-container w3-white" style="height:1000px;">
+<div class="imgcontainer">
+<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+</div>
+<div class="w3-black w3-display-topmiddle w3-padding">
+<h2>Change your password</h2>
+</div>
+<div class="modal-content animate w3-display-container" style="height:800px;">
+<div class="w3-display-left w3-display-middle w3-display-right w3-padding">
+<h4>
+<p id="vaildPSW"></p>
+<label for="psw"><b>Old Password</b></label>
+<input type="password"   id="oldpsw" class="w3-input w3-border"/>
+
+<label for="psw"><b>New Password</b></label>
+<input type="password"  id="newpsw" class="w3-input w3-border"/>
+
+<label for="psw"><b>Repeat Password</b></label>
+<input type="password"   id="repeatnewpsw" class="w3-input w3-border"/>
+
+<button id="changePSW" type="button">Confirm</button>
+
+<button type="button" onclick="document.getElementById('id03').style.display='none'">Cancel</button>
+
+</form>
+</div>
+</h4>
+</div>
+</div>
+<div id="id01" class="modal">
+<form class="modal-content animate w3-display-container w3-white" style="height:1000px;">
+<div class="imgcontainer">
+
+<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+</div>
+<div class="w3-black w3-display-topmiddle w3-padding">
+<h2>Login</h2>
+</div>
+<div class="modal-content animate w3-display-container" style="height:800px;">
+<div class="w3-display-left w3-display-middle w3-display-right w3-padding">
+<h4>
+<p id="vaildLogin"></p>
+<label for="uname"><b>Username</b></label>
+<input type="text" id="emailLogin" class="w3-input w3-border"/>
+
+<label for="psw"><b>Password</b></label>
+<input type="password"  id="pass" class="w3-input w3-border"/>
+
+<button id="login" type="button">Login</button>
+
+<button type="button" onclick="document.getElementById('id01').style.display='none'">Cancel</button>
+</h4>
+</div>
+</div>
+</form>
+</div>
+<!-- Sidebar (hidden by default) -->
+<nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
+<a href="javascript:void(0)" onclick="w3_close()"
+class="w3-bar-item w3-button">Close Menu</a>
+<a href="#pdts" onclick="w3_close()" class="w3-bar-item w3-button" id='pdtsbtn'>Product</a>
+<a href="#userInfo" class="w3-bar-item w3-button"  onclick="document.getElementById('id03').style.display='block';w3_close()"  id="changePSWBtn">Change Your Password</a>
+<a href="#cartListInfo" onclick="w3_close()"  class="w3-bar-item w3-button" id='showCartList'>Show your cart list</a>
+<a href="/location" onclick="w3_close()" class="w3-bar-item w3-button">Office Location</a>
+<a href="/admin" onclick="w3_close()" class="w3-bar-item w3-button">Admin</a>
+</nav>
+
+<!-- Top menu -->
+<div class="topnav">
+<h4>
+<a2 href="#" onclick="w3_open()">☰</a2>
+<a href="#" onclick="document.getElementById('id04').style.display='block'" id="regitem">Registration</a>
+<a href="#" onclick="document.getElementById('id01').style.display='block'" id="status">Login</a>
+<a href="#" id="cart" style="text-shadow:2px 2px 0 white">🛒</a>
+<a href="#" id="logout">Logout</a>
+</h4>
+</div>
+
+<!-- !PAGE CONTENT! -->
+<!-- w3-content defines a container for fixed size centered content,
+and is wrapped around the whole page content, except for the footer in this example -->
+<div class="w3-content" style="max-width:1600px">
+
+<!-- Header -->
+<header class="w3-container w3-center w3-padding-48 w3-white">
+<h1 class="w3-xxxlarge"><b>ABC Painting Online Shop</b></h1>
+<h4><span class="w3-tag" id="sayhi"></span></h4>
+</header>
+
+<!-- Image header -->
+<header class="w3-display-container w3-wide" id="home">
+<img class="w3-image" src="https://picsum.photos/id/319/1600/1060" id="perview" >
+<div class="w3-display-left w3-padding-large" id="hide">
+<h1 class="w3-text-white" >Choose</h1>
+<h1 class="w3-jumbo w3-text-white w3-hide-small"><b>Your favorite photo to paint</b></h1>
+<h1 class="w3-text-white">Edit your home</h1>
+</div>
+</header>
+
+<p></p>
+
+<p id="cartList">
+
+</p>
+
+
+<div id="show7">
+<div id="pdts">
+<div class="w3-display-container w3-black" style="height:600px;">
+<div class="w3-padding w3-display-left"> <iframe width="1066" height="550" src="https://www.youtube.com/embed/viHggevzP4I" frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+</div>
+
+<div class="w3-display-right w3-padding">
+<h2>Over 50+ paintings for your choice</h2>
+<h4>Build up a beautiful wall is so easy!</h4>
+</div>
+</div>
+<p></p>
+<div class="w3-display-container w3-grey" style="height:600px;">
+<div class="w3-padding w3-display-left">
+<h2>Just click few buttons</h2>
+<h4>The paintings can send to your home directly</h4>
+<h1>  <a href="#" onclick="document.getElementById('id04').style.display='block'">Registration</a></h1>
+</div>
+<div class="w3-display-right w3-padding">
+<div class="w3-display-container w3-white" style="height:550px;width:1066px;">
+<div class="w3-display-topmiddle w3-padding w3-hide-small">
+<img src="https://picsum.photos/id/401/1013/523">
+
+</div>
+</div>
+</div>
+</div>
+<p></p>
+<h1><p id="rating" style="text-align:center">User rating: </p>
+</div>
+
+
+
+
+    
+
+<!-- About Section -->
+
+</div>
+<h id="cartListInfo">
+
+<!-- About Section -->
+
+<!--Show Cart List JSON-->
+
+<h4><p id="show6" style="text-align:center"></p></h4>
+
+
+</div>
+
+<h>
+<h id="location">
+
+<!-- About Section -->
+<div class="w3-container w3-padding-32 w3-center">
+<!--Show Cart List JSON-->
+
+
+</div>
+</div>
+<h>
+
+
+
+
+
+<!-- Footer -->
+<footer class="w3-row-padding w3-padding-32">
+<div class="w3-third">
+<h3>FOOTER</h3>
+<p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</div>
+
+
+
+</footer>
+
+<!-- End page content -->
+</div>
+
+<script>
+// Script to open and close sidebar
+function w3_open() {
+document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+document.getElementById("mySidebar").style.display = "none";
+}
+// Get the modal
+var modal = document.getElementById('id01');
+var modal = document.getElementById('id02');
+var modal = document.getElementById('id03');
+var modal = document.getElementById('id04');
+var modal = document.getElementById('id05');
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+modal.style.display = "none";
+}
+}
+
+function login(formData){
+$.post("/login",
+formData,
+function(data, status){
+if (data=="Please check your entry" || data == "user not found"){
+$("#vaildLogin").empty();
+$("#vaildLogin").prepend(data);
+}else if(sessionStorage.getItem("user")==null || sessionStorage.getItem("user")=="false"){
+sessionStorage.setItem("user","true");
+idReload();
+}
+
+
+else{
+    
+$("#show7").empty();
+$("#pdtsbtn").fadeIn();
+$("#showCartList").fadeIn();
+$("#logout").fadeIn();
+$("#status").hide();
+$("#regitem").hide();
+$("#sayhi").empty();
+$("#changePSWBtn").show();
+
+
+var userData = JSON.parse(data);
+var time = new Date().getHours();
+var greeting = "";
+
+
+if(time>4 && time<12 ){
+greeting = "Good Morning";
+}else if(time>12 && time<17 ){
+greeting = "Good Afternoon";
+}
+else{
+greeting = "Good Evening";
+}
+$("#id01").fadeOut(1000);
+
+$("#sayhi").prepend(greeting +"! "+userData[0].fname+" "+userData[0].lname);
+
+var username = userData[0].fname+" "+userData[0].lname
+
+$("#userstatus").prepend("<p>Password: "+userData[0].password+"</p>");
+$("#userstatus").prepend("<p>Email: "+userData[0].email+"</p>");
+$("#userstatus").prepend("<p>Name: "+username+"</p>");
+
+sessionStorage.setItem("username",username)
+
+
+$("#changePSW").click(function(){
+var oldpsw =  $("#oldpsw").val();
+var newpsw =  $("#newpsw").val();
+var repeatnewpsw =  $("#repeatnewpsw").val();
+var rePassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!"#$%&'()*+,-.\/:;<=>?\\@[\]^_`{|}~]).{8,64}$/;
+if (oldpsw=="" || newpsw=="" || repeatnewpsw==""){
+$("#vaildPSW").empty();
+$("#vaildPSW").append("<b>Please fill in the blank</b>.");
+}else if(oldpsw!=userData[0].password){
+$("#vaildPSW").empty();
+$("#vaildPSW").append("<b>The old password is not correct. Please check</b>.");
+}else if(newpsw == oldpsw){
+$("#vaildPSW").empty();
+$("#vaildPSW").append("<b>old and new password cannot be same</b>.");
+}else if(rePassword.test(newpsw)!=true){
+$("#vaildPSW").empty();
+$("#vaildPSW").append("<b>Password should be consumed by  AT LEAST one capital letter, one number and one specific character</b>.");
+}
+else if(newpsw==repeatnewpsw){
+var changePSWData = JSON.stringify({email:userData[0].email,newpsw:newpsw});
+$.post("/changePSW",
+changePSWData,
+function(data, status){
+$("#vaildPSW").empty();
+$("#vaildPSW").append(data);
+
+setTimeout(logout,3000);
+})
+}
+});
+}
+});
+
+}
+function logout(){
+sessionStorage.removeItem("userInfo");
+sessionStorage.setItem("user","false");
+location.reload();
+}
+function cartListHandle(itemId,userid){
+
+//adding email to the JSON data
+var userList =
+{"email":userid,
+"shoppingListInfo":itemId
+}
+var formData = JSON.stringify(userList);
+//check the list isn't vaild
+
+if(userid==null || userList.shoppingListInfo.length==0){
+}else{
+$.post("/cartListHandle",
+formData,function(data,status){
+alert("You list was added successfully");
+listlock =  true
+});
+}
+}
+
+function cartListShow(email){
+$("#show7").empty();
+$.post("/cartListShow",
+email,function(data,status){
+$("#show6").empty();
+
+
+var cartListShow = JSON.parse(data);
+
+if(cartListShow.length==0){
+$("#show6").append("Your List is empty.");
+}
+
+
+else{
+
+$("#show6").append("Please click your cart list!");
+$("#show6").append("<div class='w3-container style='width:400px;float:right'>")
+for (w in cartListShow){
+$("#show6").append("<p class='w3-hover-grey' style='cursor: pointer;' id='o"+w+"'onclick=\"document.getElementById('id05').style.display='block'\">"+w+": "+cartListShow[w]._id+"</p>");
+}
+$("#show6").append("</div>")
+}
+$("[id^=o]").each(function(){
+$(this).click(function(){
+var number = this.id.split('o').pop();
+$("#show8").empty();
+
+$("#show6").css("float","right");
+$("#show8").append("<tr><th><h4>ID: "+cartListShow[number]._id+"</h3></th><th></th></tr><tr><th style='text-align:left'><h4>Author</h4></th><th><h4>Picture review</h4></th></tr>");
+$.each(cartListShow[number].shoppingListInfo,function( index ) {
+
+$("#show8").append("<tr><td><h5>"+cartListShow[number].shoppingListInfo[index].Author+"</td><td><img src=\'"+cartListShow[number].shoppingListInfo[index].pclink.replace("450/675","800/450")+"\'><p></p></td></tr>");
+
+
+});
+
+
+
+
+if (cartListShow[number].address!=undefined){
+$("#show8").append("<tr><td>Address</td><td>"+cartListShow[number].address+"</td></tr>");
+
+if(cartListShow[number].creditcard!=undefined){
+    
+  if(cartListShow[number].rating!=undefined){
+        $("#show8").append("<p><h4><strong>Thanks for your rating</strong></h4></p>");
+    }else
+  {$("#show8").append("<tr><td><button type='button' id='comment'>Comment</button></td><td></td></tr>");}
+    
+    
+
+}else{
+
+
+$("#show8").append("<tr><td><button type='button' id='payment'>Payment</button></td><td><button type='button' id='delFavList'>Delete Record</button></td></tr>");
+
+}
+
+
+}
+
+else{
+$("#show8").append("<tr><td>Address</td><td><input class='w3-input w3-border' type='text' id='address'></td></tr>");
+$("#show8").append("<tr><td><button type='button' id='add'>Add Address</button></td><td><button type='button' id='delFavList'>Delete Record</button></td></tr>");
+
+}
+
+
+   
+$("#comment").click(function(){
+    sessionStorage.setItem("id",id)
+    location.replace("/rating");
+})
+
+var id= cartListShow[number]._id
+var delLock = true
+
+$("#delFavList").click(function(){
+if (delLock==true){
+delLock = false
+$("#show8").append("<p>Are you sure delete this record?</p>");
+$("#show8").append("<p><button type='button' id='delSure'>Yes</button><button type='button' id='delNo'>No</button></p>");
+$("#delSure").click(function(){
+var delId = {"id":cartListShow[number]._id};
+var obj=JSON.stringify(delId);
+$.post("/delCartList",obj,function(data,status){
+alert("Deleted successfully");
+idReload();
+});
+});
+
+$("#delNo").click(function(){
+idReload()
+});
+}
+});
+
+
+var paymentLock = true
+$("#payment").click(function(){
+
+var noOfPayment = ""
+var howMach = 100
+var noOfList = cartListShow[number].shoppingListInfo.length
+var totalAmount = howMach*noOfList
+if(noOfList==1){
+noOfPayment="item.";
+}else{
+noOfPayment="items.";
+}
+if (paymentLock==true){
+paymentLock=false
+$("#show8").append("<p>You have "+noOfList+" "+noOfPayment+"</p>");
+$("#show8").append("<p>$"+howMach+" for each.</p>");
+$("#show8").append("<p> Total $"+totalAmount+".</p>");
+$("#show8").append("<p>Credit Card Pin Number: <input type='text' id='creditpan'></p>");
+$("#show8").append("<p>CVV: <input type='text' id='cvvVal'></p>");
+$("#show8").append("<p>Bank: <input type='text' id='bankName'></p>");
+$("#show8").append("<p><button type='button' id='getCreditCard'>vaild your credit card information</button><button type='button' id='paymentNo'>Cancel</button></p>");
+$("#getCreditCard").click(function(){
+
+//get the fake credit card
+
+$.getJSON("https://api.npoint.io/857c43e6d43b4e18724f", function(data, status){
+//showing the fake credit card information
+
+var number = Math.floor(Math.random()*300)
+var pan = data[number].PAN.replace(" ","")
+var cvv = data[number].CVV
+var month = new Date().getMonth()+1
+var year = new Date().getFullYear()+2
+
+$("#show8").append("<p>Your credit card PIN: "+pan+" and CVV: "+cvv+"</p>")
+$("#creditpan").val(pan)
+$("#cvvVal").val(cvv)
+
+
+
+$.get("https://lookup.binlist.net/"+pan,function(data){
+var bank = data.brand
+if (data.brand!=undefined){
+$("#show8").append("<p id='tryAgain')'>Your credit card bank is "+data.brand+"</p>");
+$("#bankName").val(bank)
+var formData = {id:id,PAN:pan,CVV:cvv,bank:bank,month:month,year:year,price:totalAmount}
+var obj = JSON.stringify(formData)
+
+
+sessionStorage.setItem("data",obj)
+
+location.replace("/payment");
+
+
+}else{
+$("#show8").append("<p id='tryAgain'>Please try again.</p>")
+
+}
+
+})
+.fail(function(){
+$("#show8").append("<p id='tryAgain'>Sorry your credit card is not support, please try it again.</p>")
+})
+
+
+
+
+});
+
+
+
+
+
+
+
+
+});
+
+$("#paymentNo").click(function(){
+idReload()
+});
+}
+});
+
+
+$("#add").click(function(){
+var address = $("#address").val();
+if (address==""){
+alert("Please enter your address");
+}else{
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+var myObj = JSON.parse(this.responseText);
+$("#show8").append("<p> Checked your address is "+myObj.SuggestedAddress[0].Address.PremisesAddress.EngPremisesAddress.EngStreet.StreetName+" "+myObj.SuggestedAddress[0].Address.PremisesAddress.EngPremisesAddress.EngStreet.BuildingNoFrom+"</p>");
+$("#show8").append("<p>Your address updated</p>");
+
+var userList = {"id":cartListShow[number]._id,"address": myObj.SuggestedAddress[0].Address.PremisesAddress.EngPremisesAddress.EngStreet.StreetName+" "+myObj.SuggestedAddress[0].Address.PremisesAddress.EngPremisesAddress.EngStreet.BuildingNoFrom,"lat":myObj.SuggestedAddress[0].Address.PremisesAddress.GeospatialInformation.Latitude,"lng":myObj.SuggestedAddress[0].Address.PremisesAddress.GeospatialInformation.Longitude};
+var formData = JSON.stringify(userList);
+
+$.post("/address",
+formData,function(data,status){
+setTimeout(idReload,3000);
+});
+
+
+}
+};
+xhttp.open("POST", "https://www.als.ogcio.gov.hk/lookup", true);
+xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhttp.setRequestHeader('Accept', 'application/json');
+xhttp.setRequestHeader('Accept-Language', 'en');
+xhttp.send("q="+address);
+
+
+}
+
+
+});
+});
+});
+});
+
+$("#show8").prepend("</h5>")
+}
+function loadingCartList(){
+$("#showCartList").trigger('click');
+}
+
+
+
+function idReload(){
+location.reload();
+}
+
+
+
+
+</script>
+
+</body>
+</html>
+
